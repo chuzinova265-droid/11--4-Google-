@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Словарный диктант №4 | Флеш-карточки</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #d9d2b3;
+            font-family: 'Comic Neue', 'Comic Sans MS', 'Comic Sans', 'Chalkboard SE', cursive, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .card-container {
+            max-width: 750px;
+            width: 100%;
+            background: #f0f0f0;
+            border-radius: 48px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.2), 0 8px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.2s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .page {
+            padding: 30px 28px 40px;
+            background: #f6f6f4;
+            transition: 0.2s;
+        }
+
+        .title-page {
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.6rem;
+            color: #1e3c2c;
+            text-shadow: 3px 3px 0 #c8e6b5;
+            margin-bottom: 20px;
+            word-break: break-word;
+        }
+
+        .slogan {
+            font-size: 1.9rem;
+            font-weight: bold;
+            background: #f9eec1;
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: 60px;
+            margin: 25px 0 15px;
+            color: #b45f2b;
+            box-shadow: 0 5px 0 #e0c28a;
+        }
+
+        .instruction-text {
+            font-size: 1.3rem;
+            background: #fff0cf;
+            padding: 12px 20px;
+            border-radius: 40px;
+            margin: 15px 0 20px;
+            color: #2d5720;
+            font-weight: bold;
+            display: inline-block;
+            line-height: 1.4;
+        }
+
+        .register-box {
+            background: #fff7e8;
+            padding: 20px;
+            border-radius: 40px;
+            margin: 35px 0 20px;
+            text-align: left;
+        }
+
+        .register-box label {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e2f;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .register-box input {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 1.4rem;
+            font-family: 'Comic Neue', 'Comic Sans MS', monospace;
+            border: 3px solid #c0cfb2;
+            border-radius: 60px;
+            background: white;
+            transition: 0.2s;
+            outline: none;
+        }
+
+        .register-box input:focus {
+            border-color: #7aa86a;
+            box-shadow: 0 0 0 3px rgba(106, 168, 79, 0.2);
+        }
+
+        .error-message {
+            color: #d9534f;
+            font-size: 1rem;
+            margin-top: 8px;
+            background: #ffe6e5;
+            padding: 5px 12px;
+            border-radius: 30px;
+            display: inline-block;
+        }
+
+        .btn {
+            background: #ffb347;
+            border: none;
+            font-family: 'Comic Neue', 'Comic Sans MS', cursive;
+            font-size: 1.7rem;
+            font-weight: bold;
+            padding: 14px 30px;
+            border-radius: 50px;
+            color: white;
+            text-shadow: 1px 1px 0 #a55618;
+            cursor: pointer;
+            transition: 0.1s linear;
+            box-shadow: 0 6px 0 #b4621a;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 3px 0 #b4621a;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        .word-card {
+            text-align: center;
+        }
+
+        .q-emoji {
+            font-size: 4.5rem;
+            margin-bottom: 12px;
+            display: inline-block;
+            background: #fff2d7;
+            padding: 15px;
+            border-radius: 100px;
+            box-shadow: 0 5px 0 #ddceaa;
+        }
+
+        .question-text {
+            font-size: 1.7rem;
+            background: #e8e2d0;
+            padding: 20px 15px;
+            border-radius: 40px;
+            margin: 20px 0;
+            color: #1f2f1a;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 18px 20px;
+            font-size: 1.5rem;
+            font-family: 'Comic Neue', 'Comic Sans MS', monospace;
+            border: 3px solid #b6cb9e;
+            border-radius: 60px;
+            background: white;
+            text-align: center;
+            font-weight: bold;
+            color: #1e3c1e;
+            margin: 20px 0;
+            outline: none;
+        }
+
+        .answer-input:focus {
+            border-color: #6f9e4f;
+        }
+
+        .counter {
+            font-size: 1.5rem;
+            background: #e0d5b9;
+            display: inline-block;
+            padding: 8px 24px;
+            border-radius: 40px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #2a4422;
+        }
+
+        .result-box {
+            text-align: center;
+        }
+
+        .grade-badge {
+            font-size: 3.2rem;
+            font-weight: bold;
+            background: gold;
+            display: inline-block;
+            padding: 12px 35px;
+            border-radius: 70px;
+            margin: 20px 0;
+            box-shadow: 0 8px 0 #c9a03d;
+        }
+
+        .feedback {
+            font-size: 1.7rem;
+            background: #f7e9cd;
+            padding: 20px;
+            border-radius: 50px;
+            margin: 20px 0;
+            white-space: pre-line;
+            line-height: 1.4;
+        }
+
+        .flower-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .card-container {
+            position: relative;
+            z-index: 2;
+        }
+
+        @media (max-width: 550px) {
+            .page {
+                padding: 20px 16px;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .slogan {
+                font-size: 1.4rem;
+            }
+            .instruction-text {
+                font-size: 1rem;
+            }
+            .btn {
+                font-size: 1.4rem;
+            }
+            .question-text {
+                font-size: 1.3rem;
+            }
+            .answer-input {
+                font-size: 1.2rem;
+            }
+            .grade-badge {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card-container" id="appContainer">
+    <!-- ТИТУЛЬНАЯ СТРАНИЦА -->
+    <div id="page0" class="page title-page">
+        <h1>📖 Контрольный словарный диктант № 4</h1>
+        <div class="slogan">🎈 Ошибкам — бой, словарь — со мной!</div>
+        <div class="instruction-text">
+            ✍️ Узнай слово по лексическому значению<br>
+            и запиши его правильно!
+        </div>
+        <div class="register-box">
+            <label>📝 Фамилия, имя:</label>
+            <input type="text" id="studentNameInput" placeholder="например: Иванова Мария" autocomplete="off">
+            <div style="font-size: 1rem; margin-top: 8px; color:#2c6e2c;">Напиши, пожалуйста, полную фамилию и имя</div>
+            <div id="nameErrorMsg" class="error-message" style="display: none;"></div>
+        </div>
+        <button class="btn" id="startBtn">🚀 Начать словарный диктант</button>
+    </div>
+
+    <!-- контейнер для динамических карточек -->
+    <div id="cardsContainer"></div>
+
+    <!-- СТРАНИЦА РЕЗУЛЬТАТОВ -->
+    <div id="resultPage" class="page result-box" style="display: none;">
+        <h1>🏆 Результаты диктанта 🏆</h1>
+        <div id="gradeDisplay" class="grade-badge"></div>
+        <div id="feedbackMsg" class="feedback"></div>
+        <div id="statsLine" style="font-size:1.4rem; font-weight:bold; margin-top:15px;"></div>
+    </div>
+</div>
+
+<canvas id="flowerCanvas" class="flower-canvas" width="800" height="800"></canvas>
+
+<script>
+    // ---------- СЛОВАРЬ (добавляем флаг properCase для имён собственных) ----------
+    const wordsData = [
+        { meaning: "Домашнее животное, родственник волка.", correct: "собака", emoji: "🐕", proper: false },
+        { meaning: "Мальчики и девочки в раннем возрасте.", correct: "ребята", emoji: "👧🧒", proper: false },
+        { meaning: "Страна, в которой ты живёшь.", correct: "Россия", emoji: "🇷🇺", proper: true },   // имя собственное
+        { meaning: "Длинная коробочка для ручек и карандашей.", correct: "пенал", emoji: "✏️📦", proper: false },
+        { meaning: "Первый день недели.", correct: "понедельник", emoji: "📅", proper: false },
+        { meaning: "Движение потока воздуха в горизонтальном направлении.", correct: "ветер", emoji: "💨", proper: false },
+        { meaning: "Ребёнок женского пола.", correct: "девочка", emoji: "👧", proper: false },
+        { meaning: "Промышленное предприятие с механизированными процессами производства.", correct: "завод", emoji: "🏭", proper: false },
+        { meaning: "Огородные плоды и зелень.", correct: "овощи", emoji: "🥕🍅🥦", proper: false },
+        { meaning: "Предметы, из которых едят, пьют, готовят пищу.", correct: "посуда", emoji: "🍽️🥣", proper: false },
+        { meaning: "Человек, живущий рядом, близко.", correct: "сосед", emoji: "🏘️👋", proper: false },
+        { meaning: "Продукт питания, полученный от домашних коров и коз.", correct: "молоко", emoji: "🥛", proper: false },
+        { meaning: "Лиственное дерево с белой корой и с сердцевидными листьями.", correct: "берёза", emoji: "🌳", proper: false },
+        { meaning: "Зверёк отряда грызунов с длинными ушами.", correct: "заяц", emoji: "🐇", proper: false },
+        { meaning: "Верхняя одежда, обычно ниже колен.", correct: "пальто", emoji: "🧥", proper: false }
+    ];
+
+    let currentWordIndex = 0;
+    let resultsArray = new Array(15).fill(false);
+    let studentFullName = "";
+    let totalCorrect = 0;
+    let quizActive = false;
+    let cardsPages = [];
+
+    const page0 = document.getElementById('page0');
+    const resultPage = document.getElementById('resultPage');
+    const cardsContainer = document.getElementById('cardsContainer');
+    const startBtn = document.getElementById('startBtn');
+    const studentInput = document.getElementById('studentNameInput');
+    const nameErrorMsg = document.getElementById('nameErrorMsg');
+
+    // Нормализация для обычных слов (регистронезависимая, ё→е)
+    function normalizeWord(str) {
+        return str.trim().toLowerCase().replace(/ё/g, 'е');
+    }
+
+    // Сравнение с учётом флага proper
+    function isAnswerCorrect(userAnswer, wordObj) {
+        const user = userAnswer.trim();
+        if (!user) return false;
+        if (wordObj.proper) {
+            // Имя собственное: сравниваем точное совпадение (с учётом регистра)
+            return user === wordObj.correct;
+        } else {
+            // Обычное слово: регистронезависимое сравнение + ё/е
+            return normalizeWord(user) === normalizeWord(wordObj.correct);
+        }
+    }
+
+    // Построение 15 карточек
+    function buildAllCards() {
+        cardsContainer.innerHTML = '';
+        const fragment = document.createDocumentFragment();
+        for (let i = 0; i < wordsData.length; i++) {
+            const word = wordsData[i];
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'page word-card';
+            cardDiv.id = `card_${i}`;
+            cardDiv.style.display = 'none';
+            cardDiv.innerHTML = `
+                <div class="q-emoji">${word.emoji}</div>
+                <div class="question-text">📖 ${word.meaning}</div>
+                <input type="text" class="answer-input" placeholder="Впиши слово..." autocomplete="off" spellcheck="false">
+                <div class="counter" id="counter_card_${i}">✔️ Правильных ответов: 0 из 15</div>
+                <button class="btn nextWordBtn" data-idx="${i}" disabled>➡️ Следующее словарное слово</button>
+            `;
+            fragment.appendChild(cardDiv);
+        }
+        cardsContainer.appendChild(fragment);
+        for (let i = 0; i < wordsData.length; i++) {
+            cardsPages.push(document.getElementById(`card_${i}`));
+            const btn = cardsPages[i].querySelector('.nextWordBtn');
+            const inputField = cardsPages[i].querySelector('.answer-input');
+
+            inputField.addEventListener('input', function(e) {
+                if (!quizActive) return;
+                btn.disabled = e.target.value.trim().length === 0;
+            });
+
+            btn.addEventListener('click', (function(index) {
+                return function() {
+                    if (!quizActive) return;
+                    const currentCard = cardsPages[index];
+                    const inp = currentCard.querySelector('.answer-input');
+                    const userWord = inp.value;
+                    if (!userWord.trim()) return;
+
+                    const wordObj = wordsData[index];
+                    const isCorrect = isAnswerCorrect(userWord, wordObj);
+
+                    if (isCorrect && !resultsArray[index]) {
+                        resultsArray[index] = true;
+                        totalCorrect = resultsArray.filter(v => v === true).length;
+                    } else if (!isCorrect) {
+                        resultsArray[index] = false;
+                        totalCorrect = resultsArray.filter(v => v === true).length;
+                    }
+
+                    const counterSpan = currentCard.querySelector('.counter');
+                    if (counterSpan) counterSpan.innerText = `✔️ Правильных ответов: ${totalCorrect} из 15`;
+
+                    inp.disabled = true;
+                    btn.disabled = true;
+
+                    if (index === wordsData.length - 1) {
+                        finishQuizAndShowResults();
+                    } else {
+                        goToCard(index + 1);
+                    }
+                };
+            })(i));
+        }
+    }
+
+    function goToCard(index) {
+        if (index < 0 || index >= wordsData.length) return;
+        for (let i = 0; i < cardsPages.length; i++) {
+            cardsPages[i].style.display = 'none';
+        }
+        currentWordIndex = index;
+        const currentCard = cardsPages[index];
+        currentCard.style.display = 'block';
+        const counterSpan = currentCard.querySelector('.counter');
+        if (counterSpan) counterSpan.innerText = `✔️ Правильных ответов: ${totalCorrect} из 15`;
+        const inputField = currentCard.querySelector('.answer-input');
+        const nextBtn = currentCard.querySelector('.nextWordBtn');
+        if (!inputField.disabled) {
+            inputField.value = '';
+            inputField.disabled = false;
+            nextBtn.disabled = true;
+        } else {
+            nextBtn.disabled = true;
+        }
+    }
+
+    async function finishQuizAndShowResults() {
+        quizActive = false;
+        page0.style.display = 'none';
+        for (let i = 0; i < cardsPages.length; i++) {
+            cardsPages[i].style.display = 'none';
+        }
+        totalCorrect = resultsArray.filter(v => v === true).length;
+        const errorsCount = 15 - totalCorrect;
+        let grade = '';
+        let gradeText = '';
+        if (totalCorrect === 15) {
+            grade = '5';
+            gradeText = 'Оценка: 5!';
+        } else if (totalCorrect === 14 || totalCorrect === 13) {
+            grade = '4';
+            gradeText = 'Оценка: 4!';
+        } else if (totalCorrect >= 9 && totalCorrect <= 12) {
+            grade = '3';
+            gradeText = 'Оценка: 3';
+        } else {
+            grade = '2';
+            gradeText = 'Оценка: 2';
+        }
+
+        let feedback = '';
+        if (grade === '5') {
+            feedback = '🌟 Умничка! Так держать! 🌟';
+        } else if (grade === '4') {
+            feedback = '👍 Хорошо! Но ты можешь лучше! 👍';
+        } else if (grade === '3') {
+            feedback = '📘 Повторяй словарные слова\nи тогда тебя ждёт успех! 📘';
+        } else {
+            feedback = '💪 Не ленись!\nЗаставь себя выучить словарные слова! 💪';
+        }
+
+        resultPage.style.display = 'block';
+        document.getElementById('gradeDisplay').innerText = gradeText;
+        document.getElementById('feedbackMsg').innerText = feedback;
+        document.getElementById('statsLine').innerHTML = `✅ Верно: ${totalCorrect} из 15   ❌ Ошибок: ${errorsCount}`;
+
+        startFlowerAnimation();
+        
+        // ========== ВЕСЬ БЛОК С ОТПРАВКОЙ В ТАБЛИЦУ ПОЛНОСТЬЮ УДАЛЁН ==========
+        // Результаты ученика видны только на экране и никуда не отправляются
+    }
+
+    // БЕСКОНЕЧНАЯ АНИМАЦИЯ ЦВЕТОЧКОВ (без затухания, вечное движение)
+    let animationId = null;
+    let flowers = [];
+    function startFlowerAnimation() {
+        const canvas = document.getElementById('flowerCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        
+        const flowerCount = 80; // немного цветочков для яркости
+        flowers = [];
+        for (let i = 0; i < flowerCount; i++) {
+            flowers.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 1.5,
+                vy: (Math.random() - 0.5) * 1.5 - 0.3,
+                size: 8 + Math.random() * 14,
+                color: `hsl(${Math.random() * 360}, 75%, 65%)`,
+                alpha: 0.6 + Math.random() * 0.4
+            });
+        }
+
+        function drawFlowers() {
+            if (!canvas || !ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < flowers.length; i++) {
+                const f = flowers[i];
+                ctx.save();
+                ctx.globalAlpha = f.alpha;
+                // Рисуем 5 лепестков
+                for (let p = 0; p < 5; p++) {
+                    const angle = p * (Math.PI * 2 / 5);
+                    const x1 = f.x + Math.cos(angle) * f.size * 0.7;
+                    const y1 = f.y + Math.sin(angle) * f.size * 0.7;
+                    ctx.beginPath();
+                    ctx.arc(x1, y1, f.size * 0.55, 0, Math.PI * 2);
+                    ctx.fillStyle = f.color;
+                    ctx.fill();
+                }
+                // Сердцевина
+                ctx.beginPath();
+                ctx.arc(f.x, f.y, f.size * 0.45, 0, Math.PI * 2);
+                ctx.fillStyle = `hsl(45, 85%, 58%)`;
+                ctx.fill();
+                ctx.restore();
+
+                // Движение
+                f.x += f.vx;
+                f.y += f.vy;
+                // Телепортация через границы
+                if (f.x > canvas.width + 50) f.x = -50;
+                if (f.x < -50) f.x = canvas.width + 50;
+                if (f.y > canvas.height + 60) f.y = -60;
+                if (f.y < -60) f.y = canvas.height + 60;
+            }
+            animationId = requestAnimationFrame(drawFlowers);
+        }
+
+        // Останавливаем предыдущую анимацию, если была
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+        }
+        animationId = requestAnimationFrame(drawFlowers);
+    }
+
+    // Валидация и старт (только полная фамилия и имя)
+    function validateAndStart() {
+        const rawName = studentInput.value.trim();
+        if (rawName === "") {
+            nameErrorMsg.style.display = "block";
+            nameErrorMsg.innerText = "❌ Пожалуйста, укажи фамилию и имя!";
+            return;
+        }
+        const words = rawName.split(/\s+/).filter(w => w.length > 0);
+        if (words.length < 2) {
+            nameErrorMsg.style.display = "block";
+            nameErrorMsg.innerText = "❌ Напиши, пожалуйста, полную фамилию и имя.";
+            return;
+        }
+        nameErrorMsg.style.display = "none";
+        studentFullName = rawName;
+
+        currentWordIndex = 0;
+        resultsArray.fill(false);
+        totalCorrect = 0;
+        quizActive = true;
+
+        for (let i = 0; i < cardsPages.length; i++) {
+            const card = cardsPages[i];
+            const inp = card.querySelector('.answer-input');
+            const btn = card.querySelector('.nextWordBtn');
+            inp.disabled = false;
+            inp.value = '';
+            btn.disabled = true;
+            const counterSpan = card.querySelector('.counter');
+            if (counterSpan) counterSpan.innerText = `✔️ Правильных ответов: 0 из 15`;
+        }
+
+        page0.style.display = 'none';
+        resultPage.style.display = 'none';
+        goToCard(0);
+    }
+
+    function init() {
+        buildAllCards();
+        page0.style.display = 'block';
+        resultPage.style.display = 'none';
+        cardsContainer.style.display = 'block';
+        startBtn.addEventListener('click', validateAndStart);
+        // Убедимся, что анимация не запущена до финиша
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+            const canvas = document.getElementById('flowerCanvas');
+            const ctx = canvas.getContext('2d');
+            if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+            animationId = null;
+        }
+    }
+    init();
+</script>
+</body>
+</html>
